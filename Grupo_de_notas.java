@@ -3,6 +3,9 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
 
+/**
+ * Cada instancia de la clase es una serie de notas que tienen el mismo peso dentro de un grupo que es un porcentaje determinado de la definitiva (por ejemplo, un grupo de notas podría ser "Tareas", donde todas las tareas pesan lo mismo pero el grupo "Tareas" tiene un porcentaje definido que ocupa)
+ */
 public class Grupo_de_notas{
     private String nombre;
     private double porcentaje;

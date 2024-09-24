@@ -3,7 +3,12 @@ import java.util.Scanner;
 public class Main{
     //TODO Opción para consultar papa
     //TODO Opción para consultar pappi al ingresar un semestre (Si no se ingresa el semestre mostrar el pappi del último registrado)
-    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario
+    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario:
+        /*
+            Con una nota faltante, se saca el valor necesario.
+            Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas
+            Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo, cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas.
+        */
     private static Scanner input;
     private static Estudiante perfil_principal;
     public static void main(String[] args){
@@ -73,8 +78,9 @@ public class Main{
                     int opcion = Integer.parseInt(aux_str);
                     if(opcion <= 0 || opcion > materias_arr.length+1){
                         throw new NumberFormatException();
+                    }else{
+                        //TODO Continuar, permitir que el usuario ingrese información para la materia correspondiente
                     }
-                    //TODO Continuar, permitir que el usuario ingrese información para la materia correspondiente
                 }
             }catch(NumberFormatException e){
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");

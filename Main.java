@@ -3,12 +3,9 @@ import java.util.Scanner;
 public class Main{
     //TODO Opción para consultar papa
     //TODO Opción para consultar pappi al ingresar un semestre (Si no se ingresa el semestre mostrar el pappi del último registrado)
-    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario:
-        /*
-            Con una nota faltante, se saca el valor necesario.
-            Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas
-            Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo, cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas.
-        */
+    //TODO Opción para eliminar una materia (en caso de que sea cancelada)
+    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario (usando el método de la clase Materia)
+
     private static Scanner input;
     private static Estudiante perfil_principal;
     public static void main(String[] args){
@@ -21,15 +18,15 @@ public class Main{
             System.out.println("4. Consultar P.A.P.A");
             System.out.println("\nIngresa el número de la opción que desees tomar ('ENTER' = Salir): ");
             String opcion = input.nextLine().trim();
-            if(opcion == "1"){
+            if(opcion.equals("1")){
                 opcion_ingresar_modificar_notas();
-            }else if(opcion == "2"){
+            }else if(opcion.equals("2")){
 
-            }else if(opcion == "3"){
+            }else if(opcion.equals("3")){
 
-            }else if(opcion == "4"){
+            }else if(opcion.equals("4")){
 
-            }else if(opcion == ""){
+            }else if(opcion.equals("")){
                 break;
             }else{
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
@@ -39,29 +36,7 @@ public class Main{
         }
         input.close();
     }
-    private static void opcion_ingresar_modificar_notas(){
-        //TODO Opción para que se guarde en el "perfil" propio y opción para un perfil volátil o de prueba
-        while(true){
-            System.out.println("1. Ingresar y guardar notas");
-            System.out.println("2. Ingresar notas de prueba (no se guardan) teniendo en cuenta las notas ya registradas");
-            System.out.println("3. Ingresar notas de prueba (no se guardan) sin tener en cuenta las notas ya registradas");
-            System.out.println("\nIngresa el número de la opción que desees tomar ('ENTER' = Salir): ");
-            String opcion = input.nextLine().trim();
-            if(opcion == "1"){
-                elegir_materias();
-            }else if(opcion == "2"){
 
-            }else if(opcion == "3"){
-
-            }else if(opcion == ""){
-                break;
-            }else{
-                System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
-                input.nextLine();
-                continue;
-            }
-        }
-    }
     private static void elegir_materias(){
         while(true){
             Materia[] materias_arr = perfil_principal.get_materias();
@@ -72,17 +47,43 @@ public class Main{
             System.out.println("\nIngresa el número de la materia cuyas notas quieras acceder ('ENTER' = Salir): ");
             try{
                 String aux_str = input.nextLine().trim();
-                if(aux_str == ""){
+                if(aux_str.equals("")){
                     break;
                 }else{
                     int opcion = Integer.parseInt(aux_str);
                     if(opcion <= 0 || opcion > materias_arr.length+1){
                         throw new NumberFormatException();
+                    }else if(opcion == materias_arr.length+1){
+                        //TODO Que el ususario pueda crear una nueva materia y se guarde en su perfil en el archivo
                     }else{
-                        //TODO Continuar, permitir que el usuario ingrese información para la materia correspondiente
+                        //TODO Que el usuario pueda acceder a la información de una de sus materias y modificar las notas
                     }
                 }
             }catch(NumberFormatException e){
+                System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
+                input.nextLine();
+                continue;
+            }
+        }
+    }
+
+    private static void opcion_ingresar_modificar_notas(){
+        //TODO Opción para que se guarde en el "perfil" propio y opción para un perfil volátil o de prueba
+        while(true){
+            System.out.println("1. Ingresar y guardar notas");
+            System.out.println("2. Ingresar notas de prueba (no se guardan) teniendo en cuenta las notas ya registradas");
+            System.out.println("3. Ingresar notas de prueba (no se guardan) sin tener en cuenta las notas ya registradas");
+            System.out.println("\nIngresa el número de la opción que desees tomar ('ENTER' = Salir): ");
+            String opcion = input.nextLine().trim();
+            if(opcion.equals("1")){
+                elegir_materias();
+            }else if(opcion.equals("2")){
+
+            }else if(opcion.equals("3")){
+
+            }else if(opcion.equals("")){
+                break;
+            }else{
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
                 input.nextLine();
                 continue;

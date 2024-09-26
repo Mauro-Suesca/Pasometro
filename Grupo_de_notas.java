@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  */
 public class Grupo_de_notas{
     private String nombre;
-    private double porcentaje;
+    private int porcentaje;
     private double nota_total;
     private ArrayList<Nota> notas;
     private boolean completo;
@@ -16,20 +16,20 @@ public class Grupo_de_notas{
     //Constructores
     Grupo_de_notas(){
         nombre = "";
-        porcentaje = 0.0;
+        porcentaje = 0;
         nota_total = 0.0;
         notas = new ArrayList<>();
         completo = false;
     }
 
-    Grupo_de_notas(String nombre, double porcentaje){
+    Grupo_de_notas(String nombre, int porcentaje){
         set_grupo(nombre, porcentaje);
         nota_total = 0.0;
         notas = new ArrayList<>();
         completo = false;
     }
 
-    Grupo_de_notas(String nombre, double porcentaje, int num_notas){
+    Grupo_de_notas(String nombre, int porcentaje, int num_notas){
         set_grupo(nombre, porcentaje);
         nota_total = 0.0;
         notas = new ArrayList<>(num_notas);
@@ -40,11 +40,11 @@ public class Grupo_de_notas{
         }
     }
 
-    Grupo_de_notas(String nombre, double porcentaje, double[] notas){
+    Grupo_de_notas(String nombre, int porcentaje, double[] notas){
         set_grupo(nombre, porcentaje, notas);
     }
 
-    Grupo_de_notas(String nombre, double porcentaje, Nota[] notas){
+    Grupo_de_notas(String nombre, int porcentaje, Nota[] notas){
         set_grupo(nombre, porcentaje, notas);
     }
 
@@ -99,7 +99,7 @@ public class Grupo_de_notas{
         return notas_array;
     }
 
-    public double get_porcentaje(){
+    public int get_porcentaje(){
         return porcentaje;
     }
 
@@ -123,18 +123,18 @@ public class Grupo_de_notas{
     }
 
     //Setters
-    public void set_grupo(String nombre, double porcentaje){
+    public void set_grupo(String nombre, int porcentaje){
         set_nombre(nombre);
         set_porcentaje(porcentaje);
         completo = true;
     }
 
-    public void set_grupo(String nombre, double porcentaje, double[] notas){
+    public void set_grupo(String nombre, int porcentaje, double[] notas){
         set_grupo(nombre, porcentaje);
         set_notas(notas);
     }
 
-    public void set_grupo(String nombre, double porcentaje, Nota[] notas){
+    public void set_grupo(String nombre, int porcentaje, Nota[] notas){
         set_grupo(nombre, porcentaje);
         set_notas(notas);
     }
@@ -185,7 +185,7 @@ public class Grupo_de_notas{
         set_nota_total();
     }
 
-    public void set_porcentaje(double porcentaje) throws InputMismatchException{
+    public void set_porcentaje(int porcentaje) throws InputMismatchException{
         if(porcentaje > 0){
             this.porcentaje = porcentaje;
         }else{

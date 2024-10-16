@@ -54,7 +54,7 @@ public class Main{
                     if(opcion <= 0 || opcion > materias_arr.length+1){
                         throw new NumberFormatException();
                     }else if(opcion == materias_arr.length+1){
-                        //TODO Que el ususario pueda crear una nueva materia y se guarde en su perfil en el archivo
+                        //TODO Que el usuario pueda crear una nueva materia y se guarde en su perfil en el archivo
                     }else{
                         //TODO Que el usuario pueda acceder a la información de una de sus materias y modificar las notas
                     }

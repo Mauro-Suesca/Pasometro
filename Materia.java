@@ -42,7 +42,7 @@ public class Materia implements Comparable<Materia>{
             }
         }
         for(int i=0; i<respuesta.size(); i++){
-            respuesta.get(i).set_valor(valor_necesario/respuesta.size());
+            respuesta.get(i).set_valor(valor_necesario/respuesta.size());   //Tira un InputMismatch si el valor está por encima de 5, es decir, si es imposible
         }
         return respuesta;
     }
@@ -50,10 +50,14 @@ public class Materia implements Comparable<Materia>{
     public Nota[] calcular_notas_necesarias(double nota_deseada) throws InputMismatchException{
         //Método para cálcular las notas que necesita el usuario para llegar a un valor determinado en la definitiva:
         /*
+            Se calcula la nota actual al principio en caso de que ya se haya alcanzado la nota deseada
+
             Sin notas faltantes, posiblemente tirar una excepción indicando eso
             Con una nota faltante, se saca el valor necesario.
             Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas (pero si las dos tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
             Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo (asegurándose que las notas con un mismo porcentaje queden agrupadas juntas siempre), cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas. (pero si todas tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
+
+            Si ese valor no es posible de alcanzar con las notas existentes y faltantes, tirar una excepción indicando eso 
         */
         Nota[] respuesta;
         ArrayList<Nota> respuesta_ArrayList = new ArrayList<>();
@@ -63,6 +67,7 @@ public class Materia implements Comparable<Materia>{
                 ind_grupos_faltantes.add(i);
             }
         }
+        //TODO De los grupos faltantes, separar las Notas individuales que ya tengan un valor establecido de las que realmente falten, en Grupo_de_notas aparte, cada uno con su porcentaje correspondiente según el caso (ej: si un grupo tenía 3 notas conocidas y 2 desconocidas y tenía de porcentaje 25%, hacer un grupo para las conocidas con 15% y uno para las desconocidas con 10%)
         if(ind_grupos_faltantes.size() != 0){
             if(ind_grupos_faltantes.size() == 1){
                 double valor_necesario = nota_deseada*100;

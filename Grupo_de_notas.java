@@ -6,9 +6,10 @@ import java.util.regex.Pattern;
 /**
  * Cada instancia de la clase es una serie de notas que tienen el mismo peso dentro de un grupo que es un porcentaje determinado de la definitiva (por ejemplo, un grupo de notas podría ser "Tareas", donde todas las tareas pesan lo mismo pero el grupo "Tareas" tiene un porcentaje definido que ocupa)
  */
-public class Grupo_de_notas{
+public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     private String nombre;
     private int porcentaje;
+    private double porcentaje_double = 0.0;
     private double nota_total;
     private ArrayList<Nota> notas;
     private boolean completo;
@@ -48,6 +49,12 @@ public class Grupo_de_notas{
         set_grupo(nombre, porcentaje, notas);
     }
 
+    Grupo_de_notas(String nombre, double porcentaje, Nota[] notas){
+        this.porcentaje_double = porcentaje;
+        set_nombre(nombre);
+        set_notas(notas);
+    }
+
     public void add_nota_vacia(boolean calcular_nota_total){
         add_nota_vacia(this.nombre + " " + String.valueOf(this.notas.size()+1), calcular_nota_total);
     }
@@ -70,6 +77,42 @@ public class Grupo_de_notas{
             }
         }else{
             throw new InputMismatchException("No pueden haber dos notas con un mismo nombre en una misma Materia");
+        }
+    }
+
+    @Override public int compareTo(Grupo_de_notas otra){
+        if(this.porcentaje_double != 0 && otra.porcentaje_double == 0){
+            if(this.porcentaje_double > otra.porcentaje){
+                return 1;
+            }else if(this.porcentaje_double == otra.porcentaje){
+                return 0;
+            }else{
+                return -1;
+            }
+        }else if(this.porcentaje_double == 0 && otra.porcentaje_double != 0){
+            if(this.porcentaje > otra.porcentaje_double){
+                return 1;
+            }else if(this.porcentaje == otra.porcentaje_double){
+                return 0;
+            }else{
+                return -1;
+            }
+        }else if(this.porcentaje_double != 0 && otra.porcentaje_double != 0){
+            if(this.porcentaje_double > otra.porcentaje_double){
+                return 1;
+            }else if(this.porcentaje_double == otra.porcentaje_double){
+                return 0;
+            }else{
+                return -1;
+            }
+        }else{
+            if(this.porcentaje > otra.porcentaje){
+                return 1;
+            }else if(this.porcentaje == otra.porcentaje){
+                return 0;
+            }else{
+                return -1;
+            }
         }
     }
 
@@ -101,6 +144,10 @@ public class Grupo_de_notas{
 
     public int get_porcentaje(){
         return porcentaje;
+    }
+
+    public double get_porcentaje_double(){
+        return porcentaje_double;
     }
 
     public void remove_notas(int ... notas_ind){

@@ -20,13 +20,9 @@ public class Grupo_recursivo{
     }
 
     //Getters    
-    public Grupo_de_notas[] get_grupos(){
-        Grupo_de_notas[] grupos_array = new Grupo_de_notas[grupos.size()];
+    public ArrayList<Grupo_de_notas> get_grupos(){
         grupos.sort(null);
-        for(int i=0; i<grupos.size(); i++){
-            grupos_array[i] = grupos.get(i);
-        }
-        return grupos_array;
+        return grupos;
     }
 
     public double get_porcentaje_total(){

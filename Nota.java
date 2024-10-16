@@ -12,14 +12,22 @@ public class Nota implements Comparable<Nota>{
     }
 
     Nota(String nombre){
+        this();
         set_nombre(nombre);
-        valor = null;
     }
 
     Nota(String nombre, double valor){
         set_nota(nombre, valor);
     }
+
+    Nota(Nota otra){
+        this.nombre = otra.nombre;
+        this.valor = otra.valor;
+    }
     
+    /**
+     * Comparador hecho para que al usar .sort en una lista de Notas, las notas que no tienen valor queden de últimas
+     */
     @Override public int compareTo(Nota otra){
         if(this.valor == null && otra.valor != null){
             return 1;

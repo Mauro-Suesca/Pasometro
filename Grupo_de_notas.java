@@ -24,17 +24,12 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     }
 
     Grupo_de_notas(String nombre, int porcentaje){
+        this();
         set_grupo(nombre, porcentaje);
-        nota_total = 0.0;
-        notas = new ArrayList<>();
-        completo = false;
     }
 
     Grupo_de_notas(String nombre, int porcentaje, int num_notas){
-        set_grupo(nombre, porcentaje);
-        nota_total = 0.0;
-        notas = new ArrayList<>(num_notas);
-        completo = false;
+        this(nombre, porcentaje);
 
         for(int i=0; i<num_notas; i++){
             add_nota_vacia(false);
@@ -81,38 +76,18 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     }
 
     @Override public int compareTo(Grupo_de_notas otra){
-        if(this.porcentaje_double != 0 && otra.porcentaje_double == 0){
-            if(this.porcentaje_double > otra.porcentaje){
-                return 1;
-            }else if(this.porcentaje_double == otra.porcentaje){
-                return 0;
-            }else{
-                return -1;
-            }
-        }else if(this.porcentaje_double == 0 && otra.porcentaje_double != 0){
-            if(this.porcentaje > otra.porcentaje_double){
-                return 1;
-            }else if(this.porcentaje == otra.porcentaje_double){
-                return 0;
-            }else{
-                return -1;
-            }
-        }else if(this.porcentaje_double != 0 && otra.porcentaje_double != 0){
+        if(!this.completo && otra.completo){
+            return 1;
+        }else if(this.completo == otra.completo){    
             if(this.porcentaje_double > otra.porcentaje_double){
                 return 1;
             }else if(this.porcentaje_double == otra.porcentaje_double){
-                return 0;
+                return this.nombre.compareTo(otra.nombre);
             }else{
                 return -1;
             }
         }else{
-            if(this.porcentaje > otra.porcentaje){
-                return 1;
-            }else if(this.porcentaje == otra.porcentaje){
-                return 0;
-            }else{
-                return -1;
-            }
+            return -1;
         }
     }
 
@@ -170,6 +145,10 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     }
 
     //Setters
+    public void set_completo(boolean completo){
+        this.completo = completo;
+    }
+
     public void set_grupo(String nombre, int porcentaje){
         set_nombre(nombre);
         set_porcentaje(porcentaje);
@@ -235,6 +214,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     public void set_porcentaje(int porcentaje) throws InputMismatchException{
         if(porcentaje > 0){
             this.porcentaje = porcentaje;
+            this.porcentaje_double = porcentaje;
         }else{
             throw new InputMismatchException("El porcentaje tiene que ser mayor a 0");
         }

@@ -17,6 +17,7 @@ public class Grupo_recursivo{
 
     public void add_grupo(Grupo_de_notas grupo){
         this.grupos.add(grupo);
+        porcentaje_total += grupo.get_porcentaje_double();
     }
 
     //Getters    

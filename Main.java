@@ -4,7 +4,7 @@ public class Main{
     //TODO Opción para consultar papa
     //TODO Opción para consultar pappi al ingresar un semestre (Si no se ingresa el semestre mostrar el pappi del último registrado)
     //TODO Opción para eliminar una materia (en caso de que sea cancelada)
-    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario (usando el método de la clase Materia)
+    //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario (usando el método calcular_notas_necesarias de la clase Materia)
 
     private static Scanner input;
     private static Estudiante perfil_principal;

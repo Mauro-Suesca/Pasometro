@@ -109,8 +109,25 @@ public class Materia implements Comparable<Materia>{
                             break;
                         }
                     }
-                    //TODO Hacer que esta parte llame a la función recursiva que se va a encargar del trabajo (usando la variable valor_necesario)
-                    
+                    Grupo_recursivo primer_grupo = new Grupo_recursivo();
+                    Grupo_recursivo segundo_grupo = null;
+                    boolean hay_diferente = false;
+                    double porcentaje_inicial = grupos_en_cuenta.get(ind_primer_incompleto).get_porcentaje_double();
+                    for(int i=ind_primer_incompleto; i<grupos_en_cuenta.size(); i++){
+                        if(!hay_diferente){
+                            if(grupos_en_cuenta.get(i).get_porcentaje_double() == porcentaje_inicial){
+                                primer_grupo.add_grupo(grupos_en_cuenta.get(i));
+                            }else{
+                                segundo_grupo = new Grupo_recursivo();
+                                segundo_grupo.add_grupo(grupos_en_cuenta.get(i));
+                                hay_diferente = true;   
+                            }
+                        }else{
+                            segundo_grupo.add_grupo(grupos_en_cuenta.get(i));
+                        }
+                    }
+                    respuesta_ArrayList = calcular_notas_recursivas(valor_necesario, primer_grupo, segundo_grupo);
+
                 }else if(maxima_nota_posible/100 == nota_deseada){
                     for(int i=ind_primer_incompleto; i<grupos_en_cuenta.size(); i++){
                         respuesta_ArrayList.addAll(calcular_notas_grupo(grupos_en_cuenta.get(i), 5.0));
@@ -133,39 +150,58 @@ public class Materia implements Comparable<Materia>{
     }
 
     private ArrayList<Nota> calcular_notas_recursivas(double nota_deseada, Grupo_recursivo primer_grupo, Grupo_recursivo segundo_grupo){
-        //TODO Implementar función calcular_notas_recursivas
         /*
             Con una nota faltante, se saca el valor necesario.
-            Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas (pero si las dos tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
-            Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo (asegurándose que las notas con un mismo porcentaje queden agrupadas juntas siempre, y que se agrupen las notas de mayor porcentaje primero), cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas. (pero si todas tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
+            Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas
+            Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo (asegurándose que las notas con un mismo porcentaje queden agrupadas juntas siempre, y que se agrupen las notas de mayor porcentaje primero), cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas.
          */
+        ArrayList<Nota> respuesta = new ArrayList<>();
 
+        if(segundo_grupo == null){
+            ArrayList<Grupo_de_notas> grupos = primer_grupo.get_grupos();
+            for(int i=0; i<grupos.size(); i++){
+                respuesta.addAll(calcular_notas_grupo(grupos.get(i), nota_deseada));
+            }
+        }else{
+            double nota_primer_grupo, nota_segundo_grupo, nota_actual;
+            nota_actual = nota_deseada*100;
+            nota_primer_grupo = nota_actual/primer_grupo.get_porcentaje_total() >= 5.0 ? 5.0 : nota_actual/primer_grupo.get_porcentaje_total();
+            nota_actual -= 5.0*segundo_grupo.get_porcentaje_total();
+            nota_primer_grupo = ((nota_actual/primer_grupo.get_porcentaje_total() <= 0.0 ? 0.0 : nota_actual/primer_grupo.get_porcentaje_total()) + nota_primer_grupo)/2;
 
-        /*
-            ArrayList<Nota> respuesta = new ArrayList<>();
-            valor_necesario *= notas_grupo.length;
-            for(int i=0; i<notas_grupo.length; i++){
-                if(notas_grupo[i].get_valor() == null){
-                    respuesta.add(notas_grupo[i]);
+            nota_actual = nota_deseada*100;
+            nota_segundo_grupo = nota_actual/segundo_grupo.get_porcentaje_total() >= 5.0 ? 5.0 : nota_actual/segundo_grupo.get_porcentaje_total();
+            nota_actual -= 5.0*primer_grupo.get_porcentaje_total();
+            nota_segundo_grupo = ((nota_actual/segundo_grupo.get_porcentaje_total() <= 0.0 ? 0.0 : nota_actual/segundo_grupo.get_porcentaje_total()) + nota_segundo_grupo)/2;
+
+            ArrayList<Grupo_de_notas> primeros_grupos = primer_grupo.get_grupos();
+            for(int i=0; i<primeros_grupos.size(); i++){
+                respuesta.addAll(calcular_notas_grupo(primeros_grupos.get(i), nota_primer_grupo));
+            }
+
+            Grupo_recursivo nuevo_primer_grupo = new Grupo_recursivo();
+            Grupo_recursivo nuevo_segundo_grupo = null;
+            boolean hay_diferente = false;
+            ArrayList<Grupo_de_notas> grupos_en_cuenta = segundo_grupo.get_grupos();
+            double porcentaje_inicial = grupos_en_cuenta.get(0).get_porcentaje_double();
+
+            for(int i=0; i<grupos_en_cuenta.size(); i++){
+                if(!hay_diferente){
+                    if(grupos_en_cuenta.get(i).get_porcentaje_double() == porcentaje_inicial){
+                        nuevo_primer_grupo.add_grupo(grupos_en_cuenta.get(i));
+                    }else{
+                        nuevo_segundo_grupo = new Grupo_recursivo();
+                        nuevo_segundo_grupo.add_grupo(grupos_en_cuenta.get(i));
+                        hay_diferente = true;   
+                    }
                 }else{
-                    valor_necesario -= notas_grupo[i].get_valor();
+                    nuevo_segundo_grupo.add_grupo(grupos_en_cuenta.get(i));
                 }
             }
-            for(int i=0; i<respuesta.size(); i++){
-                respuesta.get(i).set_valor(valor_necesario/respuesta.size());
-            }
-            return respuesta;
-        */
-        if(grupos_en_cuenta.size() == 1){
-            
-            Nota[] notas_grupo = grupos[grupos_en_cuenta.get(0)].get_notas();
-            respuesta_ArrayList = calcular_notas_grupo(notas_grupo, valor_necesario);
-
-        }else if(grupos_en_cuenta.size() == 2){
-            //TODO Con dos notas faltantes, se pone una de ellas como la nota máxima (5) y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es menor a 0, se pone 0), ahora, se pone la primera nota como la mínima (0), y se mira qué nota se necesitaría en la otra para llegar al valor deseado (si es mayor a 5, se pone 5), luego, se promedian las dos notas necesarias y esa es la nota que se tomará. Se invierten los roles de las dos notas para obtener el valor necesario en ambas (pero si las dos tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
-        }else{
-            //TODO Con tres o más notas faltantes, se agrupan todas las notas faltantes menos una en un solo grupo (asegurándose que las notas con un mismo porcentaje queden agrupadas juntas siempre, y que se agrupen las notas de mayor porcentaje primero), cuyo porcentaje es la suma de los porcentajes de las notas que lo conforman, con eso, se hace el procedimiento de dos notas faltantes. Después, se hace el mismo procedimiento con las notas que conformaban al grupo creado anteriormente, hasta que se tenga el valor necesario en todas las notas. (pero si todas tienen el mismo porcentaje, se pone el mismo valor en todas: el valor deseado)
+            respuesta.addAll(calcular_notas_recursivas(nota_segundo_grupo, nuevo_primer_grupo, nuevo_segundo_grupo));
         }
+
+        return respuesta;
     }
 
     @Override public int compareTo(Materia otra){

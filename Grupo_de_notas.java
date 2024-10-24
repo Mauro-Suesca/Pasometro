@@ -13,6 +13,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     private double nota_total;
     private ArrayList<Nota> notas;
     private boolean completo;
+    private int cant_notas_actual;
     
     //Constructores
     Grupo_de_notas(){
@@ -21,6 +22,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         nota_total = 0.0;
         notas = new ArrayList<>();
         completo = false;
+        cant_notas_actual = 0;
     }
 
     Grupo_de_notas(String nombre, int porcentaje){
@@ -51,16 +53,17 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     }
 
     public void add_nota_vacia(boolean calcular_nota_total){
-        add_nota_vacia(this.nombre + " " + String.valueOf(this.notas.size()+1), calcular_nota_total);
+        add_nota_vacia(this.nombre + " " + String.valueOf(cant_notas_actual+1), calcular_nota_total);
     }
 
     public void add_nota_vacia(String nombre, boolean calcular_nota_total){
         add_notas(new Nota(nombre), calcular_nota_total);
         completo = false;
+        cant_notas_actual++;
     }
 
     public void add_notas(double valor, boolean calcular_nota_total){
-        Nota nota = new Nota(this.nombre + " " + String.valueOf(this.notas.size()+1), valor);
+        Nota nota = new Nota(this.nombre + " " + String.valueOf(cant_notas_actual+1), valor);
         add_notas(nota, calcular_nota_total);
     }
 
@@ -70,6 +73,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
             if(calcular_nota_total){
                 set_nota_total();
             }
+            cant_notas_actual++;
         }else{
             throw new InputMismatchException("No pueden haber dos notas con un mismo nombre en una misma Materia");
         }
@@ -152,7 +156,6 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     public void set_grupo(String nombre, int porcentaje){
         set_nombre(nombre);
         set_porcentaje(porcentaje);
-        completo = true;
     }
 
     public void set_grupo(String nombre, int porcentaje, double[] notas){
@@ -200,6 +203,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         for(int i=0; i<notas.length; i++){
             add_notas(notas[i], false);
         }
+        completo = true;
         set_nota_total();
     }
 
@@ -208,6 +212,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         for(int i=0; i<notas.length; i++){
             add_notas(notas[i], false);
         }
+        completo = true;
         set_nota_total();
     }
 

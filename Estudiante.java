@@ -30,6 +30,11 @@ public class Estudiante{
         set_estudiante(materias, creditos_carrera);
     }
 
+    /**
+     * Este método añade una materia al Estudiante, si una materia con el mismo nombre no existe ya en el Estudiante
+     * @param nueva la materia a añadir
+     * @return true si la materia se añadió correctamente, false si ya había una materia del mismo nombre añadida
+     */
     public boolean add_materia(Materia nueva){
         boolean add = true;
         for(int i=0; i<materias.size(); i++){

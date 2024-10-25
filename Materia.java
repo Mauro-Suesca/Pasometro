@@ -9,7 +9,7 @@ public class Materia implements Comparable<Materia>{
     private int creditos;
     private int semestre;
     private double nota_final;
-    private Grupo_de_notas[] grupos;
+    private ArrayList<Grupo_de_notas> grupos;
 
     //Constructores
     Materia(){
@@ -55,13 +55,13 @@ public class Materia implements Comparable<Materia>{
         ArrayList<Nota> respuesta_ArrayList = new ArrayList<>();
         ArrayList<Grupo_de_notas> grupos_en_cuenta = new ArrayList<>();
         boolean hay_incompletos = false;
-        for(int i=0; i<grupos.length; i++){
-            if(grupos[i].get_completo()){
-                grupos_en_cuenta.add(grupos[i]);
+        for(int i=0; i<grupos.size(); i++){
+            if(grupos.get(i).get_completo()){
+                grupos_en_cuenta.add(grupos.get(i));
             }else{
                 hay_incompletos = true;
                 //Se separan las Notas individuales que ya tengan un valor establecido de las que realmente faltan, en Grupo_de_notas aparte, cada uno con su porcentaje correspondiente según el caso (ej: si un grupo tenía 3 notas conocidas y 2 desconocidas y tenía de porcentaje 25%, hacer un grupo para las conocidas con 15% y uno para las desconocidas con 10%), con este método, la nota que se necesite en un grupo se puede dar directamente a todas las Notas del grupo, porque solo habrán Notas faltantes de un mismo porcentaje en un mismo grupo
-                Nota[] notas_grupo = grupos[i].get_notas();
+                Nota[] notas_grupo = grupos.get(i).get_notas();
                 Grupo_de_notas grupo_completo;
                 Grupo_de_notas grupo_incompleto;
                 int ind_primer_null = -1;
@@ -73,11 +73,11 @@ public class Materia implements Comparable<Materia>{
                     }
                 }
                 if(ind_primer_null > 0){
-                    porcentaje_completo = ind_primer_null * grupos[i].get_porcentaje() / notas_grupo.length;    //ind_primer_null es igual al número de notas que ya tienen valor en el grupo
+                    porcentaje_completo = ind_primer_null * grupos.get(i).get_porcentaje() / notas_grupo.length;    //ind_primer_null es igual al número de notas que ya tienen valor en el grupo
                     grupo_completo = new Grupo_de_notas(notas_grupo[0].get_nombre(), porcentaje_completo, Arrays.copyOfRange(notas_grupo, 0, ind_primer_null));
                     grupos_en_cuenta.add(grupo_completo);
                 }
-                grupo_incompleto = new Grupo_de_notas(notas_grupo[ind_primer_null].get_nombre(), grupos[i].get_porcentaje() - porcentaje_completo, Arrays.copyOfRange(notas_grupo, ind_primer_null, notas_grupo.length));
+                grupo_incompleto = new Grupo_de_notas(notas_grupo[ind_primer_null].get_nombre(), grupos.get(i).get_porcentaje() - porcentaje_completo, Arrays.copyOfRange(notas_grupo, ind_primer_null, notas_grupo.length));
                 grupo_incompleto.set_completo(false);
                 grupos_en_cuenta.add(grupo_incompleto);
             }
@@ -225,16 +225,21 @@ public class Materia implements Comparable<Materia>{
         return creditos;
     }
 
+    public Grupo_de_notas[] get_grupos(){
+        Grupo_de_notas[] grupos_array = new Grupo_de_notas[grupos.size()];
+        grupos.sort(null);
+        for(int i=0; i<grupos.size(); i++){
+            grupos_array[i] = grupos.get(i);
+        }
+        return grupos_array;
+    }
+
     public String get_nombre(){
         return nombre;
     }
 
     public double get_nota_final(){
         return nota_final;
-    }
-
-    public Grupo_de_notas[] get_notas(){
-        return grupos;
     }
 
     public int get_semestre(){
@@ -256,7 +261,11 @@ public class Materia implements Comparable<Materia>{
             aux += grupos[i].get_porcentaje();
         }
         if(aux == 100.0){
-            this.grupos = grupos;
+            this.grupos = new ArrayList<>(grupos.length);
+            for(int i=0; i<grupos.length; i++){
+                this.grupos.add(grupos[i]);
+            }
+            this.grupos.sort(null);
             aux = 0.0;
             for(int i=0; i<grupos.length; i++){
                 aux += grupos[i].get_nota_total()*grupos[i].get_porcentaje();

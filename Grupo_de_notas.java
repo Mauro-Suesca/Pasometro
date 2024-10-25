@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     private String nombre;
     private int porcentaje;
-    private double porcentaje_double = 0.0;
+    private double porcentaje_double = 0.0; //Por lo general se usa 'porcentaje' en vez de 'porcentaje_double', la única vez que se usa 'porcentaje_double' es en '.calcular_notas_necesarias()' de la clase Materia
     private double nota_total;
     private ArrayList<Nota> notas;
     private boolean completo;

@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import org.json.simple.JSONArray;
@@ -12,33 +13,59 @@ public class Main{
 
     //TODO Opción para eliminar una materia (en caso de que sea cancelada)
     //TODO Opción para ver qué notas se necesita sacar para obtener una nota final dada por el usuario (usando el método calcular_notas_necesarias de la clase Materia)
+    /*
+        Python code
+        def rgb_color(r, g, b):     #Al darle como parámetros un código de color rgb, cambia el texto al color correspondiente
+        return f'{ESC}[38;2;{r};{g};{b}m'
+    */
 
     private static Scanner input;
     private static Estudiante perfil_principal;
     private static String archivo = "./datos.json";
+    private static final String ESC = "\u001B";
     public static void main(String[] args){
-        //TODO En caso de que no haya información en el archivo/no exista, un menú para crear el perfil principal
-        leer_archivo();
-
         input = new Scanner(System.in);
-
+        if(!leer_archivo()){
+            while(true){
+                try{
+                    clear_screen();
+                    System.out.println("Parece que es la primera vez que entras a este programa (si crees que es un error, comunícate con el desarrollador)");
+                    System.out.println("Por favor ingresa la cantidad de créditos que hay en tu carrera: ");
+                    int creditos = input.nextInt();
+                    perfil_principal = new Estudiante(creditos);
+                    actualizar_archivo();
+                }catch(InputMismatchException e){
+                    System.out.println("La cantidad de créditos tiene que ser un número entero positivo, presiona 'ENTER' para volver a intentar");
+                    input.nextLine();
+                    continue;
+                }
+            }
+        }
+        
         while(true){
+            clear_screen();
+            boolean hay_materias = perfil_principal.get_materias().length > 0;
             System.out.println("1. Ingresar o modificar notas");
-            System.out.println("2. Consultar notas");
-            System.out.println("3. Consultar P.A.P.P.I");
-            System.out.println("4. Consultar P.A.P.A");
+            if(hay_materias){
+                System.out.println("2. Consultar notas");
+                System.out.println("3. Consultar P.A.P.P.I");
+                System.out.println("4. Consultar P.A.P.A");
+            }
             System.out.println("\nIngresa el número de la opción que desees tomar ('ENTER' = Salir): ");
             String opcion = input.nextLine().trim();
-            if(opcion.equals("1")){
-                opcion_ingresar_modificar_notas();
-            }else if(opcion.equals("2")){
-
-            }else if(opcion.equals("3")){
-                //TODO Opción para consultar pappi al ingresar un semestre (Si no se ingresa el semestre mostrar el pappi del último registrado)
-            }else if(opcion.equals("4")){
-                //TODO Opción para consultar papa
-            }else if(opcion.equals("")){
+            if(opcion.equals("")){
+                actualizar_archivo();
                 break;
+            }else if(opcion.equals("1")){
+                opcion_ingresar_modificar_notas();
+            }else if(hay_materias){
+                if(opcion.equals("2")){
+
+                }else if(opcion.equals("3")){
+                    opcion_obtener_promedios(true);
+                }else if(opcion.equals("4")){
+                    opcion_obtener_promedios(false);
+                }
             }else{
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
                 input.nextLine();
@@ -111,6 +138,11 @@ public class Main{
             return false;
         }
     }
+    
+    private static void clear_screen(){
+        System.out.print(ESC + "[3J" + ESC + "[2J" + ESC + "[H" + ESC + "[0m");
+        System.out.flush();
+    }
 
     private static void elegir_materias(){
         while(true){
@@ -145,6 +177,7 @@ public class Main{
     private static void opcion_ingresar_modificar_notas(){
         //TODO Opción para que se guarde en el "perfil" propio y opción para un perfil volátil o de prueba
         while(true){
+            clear_screen();
             System.out.println("1. Ingresar y guardar notas");
             System.out.println("2. Ingresar notas de prueba (no se guardan) teniendo en cuenta las notas ya registradas");
             System.out.println("3. Ingresar notas de prueba (no se guardan) sin tener en cuenta las notas ya registradas");
@@ -163,6 +196,43 @@ public class Main{
                 input.nextLine();
                 continue;
             }
+        }
+    }
+
+    private static void opcion_obtener_promedios(boolean pappi){
+        if(pappi){
+            Materia[] materias = perfil_principal.get_materias();
+            int semestre_actual = materias[materias.length-1].get_semestre();
+            while(true){
+                clear_screen();
+                System.out.println("Ingresa el número del semestre cuyo P.A.P.P.I. quieres consultar ('ENTER' = semestre actual): ");
+                String opcion_str = input.nextLine().trim();
+                int opcion;
+                if(!opcion_str.equals("")){
+                    try{
+                        opcion = Integer.parseInt(opcion_str);
+                        if(opcion <= 0 || opcion > semestre_actual) throw new NumberFormatException();
+                    }catch(NumberFormatException e){
+                        if(semestre_actual > 1){
+                            System.out.println("El valor ingresado debe ser un número entre 1 y " + semestre_actual + ", presiona 'ENTER' para volver a intentar");
+                        }else{
+                            System.out.println("El valor ingresado no corresponde a un semestre cursado, presiona 'ENTER' para volver a intentar");
+                        }
+                        input.nextLine();
+                        continue;
+                    }
+                }else{
+                    opcion = semestre_actual;
+                }
+                clear_screen();
+                System.out.println("Tu P.A.P.P.I. en el semestre " + (opcion == semestre_actual ? "actual es: " : opcion + " fue: ") + perfil_principal.calcular_pappi(opcion));
+                input.nextLine();
+                break;
+            }
+        }else{
+            clear_screen();
+            System.out.println("Tu P.A.P.A hasta este momento es de: " + perfil_principal.get_papa());
+            input.nextLine();
         }
     }
 
@@ -218,11 +288,7 @@ public class Main{
             perfil_principal = new Estudiante(materias_array, creditos_carrera);
 
             return true;
-        }catch(IOException e){
-            //TODO Manejar excepciones
-            return false;
-        }catch(ParseException e){
-            //Esta excepción ocurre cuando hay un error en el formato del json
+        }catch(IOException | ParseException e){
             return false;
         }
     }

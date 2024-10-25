@@ -52,30 +52,45 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         set_notas(notas);
     }
 
-    public void add_nota_vacia(boolean calcular_nota_total){
-        add_nota_vacia(this.nombre + " " + String.valueOf(cant_notas_actual+1), calcular_nota_total);
+    public void add_nota_vacia(boolean calcular_nota){
+        add_nota_vacia(this.nombre + " " + String.valueOf(cant_notas_actual+1), calcular_nota);
     }
 
-    public void add_nota_vacia(String nombre, boolean calcular_nota_total){
-        add_notas(new Nota(nombre), calcular_nota_total);
+    public void add_nota_vacia(String nombre, boolean calcular_nota){
+        add_notas(new Nota(nombre), calcular_nota);
         completo = false;
         cant_notas_actual++;
     }
 
-    public void add_notas(double valor, boolean calcular_nota_total){
+    public void add_notas(double valor, boolean calcular_nota){
         Nota nota = new Nota(this.nombre + " " + String.valueOf(cant_notas_actual+1), valor);
-        add_notas(nota, calcular_nota_total);
+        add_notas(nota, calcular_nota);
     }
 
-    public void add_notas(Nota nota, boolean calcular_nota_total) throws InputMismatchException{
+    public void add_notas(Nota nota, boolean calcular_nota) throws InputMismatchException{
         if(this.notas.indexOf(nota) == -1){
             this.notas.add(nota);
-            if(calcular_nota_total){
-                set_nota_total();
+            if(calcular_nota){
+                calcular_nota_total();
             }
             cant_notas_actual++;
         }else{
             throw new InputMismatchException("No pueden haber dos notas con un mismo nombre en una misma Materia");
+        }
+    }
+
+    private void calcular_nota_total(){
+        nota_total = 0.0;
+        if(notas.size() > 0){
+            this.notas.sort(null);
+            for(int i=0; i<notas.size(); i++){
+                if(notas.get(i).get_valor() != null){
+                    nota_total += notas.get(i).get_valor();
+                }else{
+                    break;
+                }
+            }
+            nota_total /= notas.size();
         }
     }
 
@@ -109,6 +124,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
     }
     
     public double get_nota_total(){
+        calcular_nota_total();
         return nota_total;
     }
 
@@ -133,7 +149,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         for(int i=notas_ind.length-1; i>=0; i--){
             this.notas.remove(notas_ind[i]);
         }
-        set_nota_total();
+        calcular_nota_total();
     }
 
     public void remove_notas(String ... notas){
@@ -145,7 +161,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
                 }
             }
         }
-        set_nota_total();
+        calcular_nota_total();
     }
 
     //Setters
@@ -178,24 +194,9 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
         }
     }
 
-    private void set_nota_total(){
-        nota_total = 0.0;
-        if(notas.size() > 0){
-            this.notas.sort(null);
-            for(int i=0; i<notas.size(); i++){
-                if(notas.get(i).get_valor() != null){
-                    nota_total += notas.get(i).get_valor();
-                }else{
-                    break;
-                }
-            }
-            nota_total /= notas.size();
-        }
-    }
-
     public void set_notas(int index, double nota){
         notas.get(index).set_valor(nota);
-        set_nota_total();
+        calcular_nota_total();
     }
 
     public void set_notas(double[] notas){
@@ -204,7 +205,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
             add_notas(notas[i], false);
         }
         completo = true;
-        set_nota_total();
+        calcular_nota_total();
     }
 
     public void set_notas(Nota[] notas){
@@ -213,7 +214,7 @@ public class Grupo_de_notas implements Comparable<Grupo_de_notas>{
             add_notas(notas[i], false);
         }
         completo = true;
-        set_nota_total();
+        calcular_nota_total();
     }
 
     public void set_porcentaje(int porcentaje) throws InputMismatchException{

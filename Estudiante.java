@@ -45,22 +45,34 @@ public class Estudiante{
         }
         if(add){
             materias.add(nueva);
+            calcular_papa();
         }
         return add;
+    }
+
+    private void calcular_papa(){
+        DecimalFormat formatter = new DecimalFormat("#.#");
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
+        int creditos_cursados = 0;
+        double papa_num = 0.0;
+        for(int i=0; i<materias.size(); i++){
+            creditos_cursados += materias.get(i).get_creditos();
+            papa += materias.get(i).get_creditos()*materias.get(i).get_nota_final();
+        }
+        if(creditos_cursados > 0) papa_num /= creditos_cursados;
+        papa = formatter.format(papa_num);
     }
 
     public String calcular_pappi(int semes){
         ArrayList<Materia> materias_actuales = new ArrayList<>();
         boolean existen_materias = false;
-        if(semes > 0){
-            materias.sort(null);
-            for(int i=0; i<materias.size(); i++){
-                if(materias.get(i).get_semestre() == semes){
-                    materias_actuales.add(materias.get(i));
-                    existen_materias = true;
-                }else if(materias.get(i).get_semestre() > semes){
-                    break;
-                }
+        materias.sort(null);
+        for(int i=0; i<materias.size(); i++){
+            if(materias.get(i).get_semestre() == semes){
+                materias_actuales.add(materias.get(i));
+                existen_materias = true;
+            }else if(materias.get(i).get_semestre() > semes){
+                break;
             }
         }
         if(existen_materias){
@@ -75,7 +87,7 @@ public class Estudiante{
             pappi_num /= creditos_cursados;
             return formatter.format(pappi_num);
         }else{
-            return "0.0, no hay materias registradas para el semestre ingresado";
+            return "0.0, no hay materias registradas para dicho semestre";
         }
     }
 
@@ -94,6 +106,7 @@ public class Estudiante{
     }
 
     public String get_papa(){
+        calcular_papa();
         return papa;
     }
 
@@ -135,20 +148,7 @@ public class Estudiante{
         }
         this.materias.sort(null);
         set_porcentaje_carrera();
-        set_papa();
-    }
-
-    private void set_papa(){
-        DecimalFormat formatter = new DecimalFormat("#.#");
-        formatter.setRoundingMode(RoundingMode.HALF_UP);
-        int creditos_cursados = 0;
-        double papa_num = 0.0;
-        for(int i=0; i<materias.size(); i++){
-            creditos_cursados += materias.get(i).get_creditos();
-            papa += materias.get(i).get_creditos()*materias.get(i).get_nota_final();
-        }
-        papa_num /= creditos_cursados;
-        papa = formatter.format(papa_num);
+        calcular_papa();
     }
 
     private void set_porcentaje_carrera(){

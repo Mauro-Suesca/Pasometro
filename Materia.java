@@ -32,6 +32,14 @@ public class Materia implements Comparable<Materia>{
         set_materia(nombre, creditos, semestre, grupos);
     }
 
+    private void calcular_nota_final(){
+        double aux = 0.0;
+        for(int i=0; i<grupos.size(); i++){
+            aux += grupos.get(i).get_nota_total()*grupos.get(i).get_porcentaje();
+        }
+        nota_final = aux / 100;
+    }
+
     private ArrayList<Nota> calcular_notas_grupo(Grupo_de_notas grupo, double valor_necesario){
         ArrayList<Nota> respuesta = new ArrayList<>();
         Nota[] notas_grupo = grupo.get_notas();
@@ -208,13 +216,7 @@ public class Materia implements Comparable<Materia>{
         if(this.semestre > otra.semestre){
             return 1;
         }else if(this.semestre == otra.semestre){
-            if(this.nombre.compareTo(otra.nombre) > 0){
-                return 1;
-            }else if(this.nombre.equals(otra.nombre)){
-                return 0;
-            }else{
-                return -1;
-            }
+            return this.nombre.compareTo(otra.nombre);
         }else{
             return -1;
         }
@@ -239,6 +241,7 @@ public class Materia implements Comparable<Materia>{
     }
 
     public double get_nota_final(){
+        calcular_nota_final();
         return nota_final;
     }
 
@@ -256,21 +259,17 @@ public class Materia implements Comparable<Materia>{
     }
 
     public void set_grupos(Grupo_de_notas[] grupos) throws InputMismatchException{
-        double aux = 0.0;
+        int aux = 0;
         for(int i=0; i<grupos.length; i++){
             aux += grupos[i].get_porcentaje();
         }
-        if(aux == 100.0){
+        if(aux == 100){
             this.grupos = new ArrayList<>(grupos.length);
             for(int i=0; i<grupos.length; i++){
                 this.grupos.add(grupos[i]);
             }
             this.grupos.sort(null);
-            aux = 0.0;
-            for(int i=0; i<grupos.length; i++){
-                aux += grupos[i].get_nota_total()*grupos[i].get_porcentaje();
-            }
-            nota_final = aux / 100;
+            calcular_nota_final();
         }else{
             throw new InputMismatchException("El porcentaje total de las notas no suma 100%");
         }

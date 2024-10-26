@@ -58,14 +58,12 @@ public class Main{
                 break;
             }else if(opcion.equals("1")){
                 opcion_ingresar_modificar_notas();
-            }else if(hay_materias){
-                if(opcion.equals("2")){
+            }else if(opcion.equals("2") && hay_materias){
 
-                }else if(opcion.equals("3")){
-                    opcion_obtener_promedios(true);
-                }else if(opcion.equals("4")){
-                    opcion_obtener_promedios(false);
-                }
+            }else if(opcion.equals("3") && hay_materias){
+                opcion_obtener_promedios(true);
+            }else if(opcion.equals("4") && hay_materias){
+                opcion_obtener_promedios(false);
             }else{
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
                 input.nextLine();
@@ -147,14 +145,16 @@ public class Main{
     private static void elegir_materias(){
         while(true){
             Materia[] materias_arr = perfil_principal.get_materias();
+            clear_screen();
             for(int i=0; i<materias_arr.length; i++){
                 System.out.println((i+1) + ". " + materias_arr[i].get_nombre());
             }
             System.out.println((materias_arr.length+1) + ". Crear nueva materia");
-            System.out.println("\nIngresa el número de la materia cuyas notas quieras acceder ('ENTER' = Salir): ");
+            System.out.println("\nIngresa el número de la materia cuyas notas quieras acceder ('ENTER' = Guardar y salir): ");
             try{
                 String aux_str = input.nextLine().trim();
                 if(aux_str.equals("")){
+                    actualizar_archivo();
                     break;
                 }else{
                     int opcion = Integer.parseInt(aux_str);
@@ -162,6 +162,37 @@ public class Main{
                         throw new NumberFormatException();
                     }else if(opcion == materias_arr.length+1){
                         //TODO Que el usuario pueda crear una nueva materia y se guarde en su perfil en el archivo
+                        while(true){
+                            clear_screen();
+                            Materia nueva;
+                            System.out.println("Ingresa el nombre de la materia: ");
+                            String nombre = input.nextLine().trim(), aux;
+                            int creditos, semestre;
+                            while(true){
+                                try{
+                                    System.out.println("Ingresa el número de créditos de la materia: ");
+                                    aux = input.nextLine().trim();
+                                    creditos = Integer.parseInt(aux);
+                                    //TODO Semestre y opción de ingresar nota final
+                                }catch(NumberFormatException e){
+                                    System.out.println("El valor ingresado no es un número entero, presiona 'ENTER' para volver a intentar");
+                                    input.nextLine();
+                                    continue;
+                                }
+                                try{
+
+                                }catch(InputMismatchException e){
+                                    //TODO Crear materia
+                                }
+                                break;
+                            }
+
+                            if(perfil_principal.add_materia(nueva)){
+                                break;
+                            }else{
+
+                            }
+                        }
                     }else{
                         //TODO Que el usuario pueda acceder a la información de una de sus materias y modificar las notas
                     }
@@ -178,19 +209,22 @@ public class Main{
         //TODO Opción para que se guarde en el "perfil" propio y opción para un perfil volátil o de prueba
         while(true){
             clear_screen();
+            boolean hay_materias = perfil_principal.get_materias().length > 0;
             System.out.println("1. Ingresar y guardar notas");
-            System.out.println("2. Ingresar notas de prueba (no se guardan) teniendo en cuenta las notas ya registradas");
-            System.out.println("3. Ingresar notas de prueba (no se guardan) sin tener en cuenta las notas ya registradas");
+            if(hay_materias){
+                System.out.println("2. Ingresar notas de prueba (no se guardan) teniendo en cuenta las notas ya registradas");
+                System.out.println("3. Ingresar notas de prueba (no se guardan) sin tener en cuenta las notas ya registradas");
+            }
             System.out.println("\nIngresa el número de la opción que desees tomar ('ENTER' = Salir): ");
             String opcion = input.nextLine().trim();
-            if(opcion.equals("1")){
-                elegir_materias();
-            }else if(opcion.equals("2")){
-
-            }else if(opcion.equals("3")){
-
-            }else if(opcion.equals("")){
+            if(opcion.equals("")){
                 break;
+            }else if(opcion.equals("1")){
+                elegir_materias();
+            }else if(opcion.equals("2") && hay_materias){
+
+            }else if(opcion.equals("3") && hay_materias){
+
             }else{
                 System.out.println("La opción ingresada no es válida, presiona 'ENTER' para volver a intentar");
                 input.nextLine();

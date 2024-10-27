@@ -161,7 +161,6 @@ public class Main{
                     if(opcion <= 0 || opcion > materias_arr.length+1){
                         throw new NumberFormatException();
                     }else if(opcion == materias_arr.length+1){
-                        //TODO Que el usuario pueda crear una nueva materia y se guarde en su perfil en el archivo
                         while(true){
                             clear_screen();
                             Materia nueva;
@@ -169,28 +168,70 @@ public class Main{
                             String nombre = input.nextLine().trim(), aux;
                             int creditos, semestre;
                             while(true){
+                                while(true){
+                                    try{
+                                        System.out.println("Ingresa el número de créditos de la materia: ");
+                                        aux = input.nextLine().trim();
+                                        creditos = Integer.parseInt(aux);
+                                        break;                                   
+                                    }catch(NumberFormatException e){
+                                        System.out.println("El valor ingresado no es un número entero, presiona 'ENTER' para volver a intentar");
+                                        input.nextLine();
+                                        continue;
+                                    }
+                                }
+                                while(true){
+                                    try{
+                                        System.out.println("Ingresa el semestre en el que viste la materia: ");
+                                        aux = input.nextLine().trim();
+                                        semestre = Integer.parseInt(aux);
+                                        break;
+                                    }catch(NumberFormatException e){
+                                        System.out.println("El valor ingresado no es un número entero, presiona 'ENTER' para volver a intentar");
+                                        input.nextLine();
+                                        continue;
+                                    }
+                                }
+                                boolean hay_nota_final = true;
+                                double nota_final = 0.0;
+                                while(true){
+                                    try{
+                                        System.out.println("Si ya tienes la nota final de la materia, ingrésala, de lo contrario, solo presiona 'ENTER' para continuar: ");
+                                        aux = input.nextLine().trim();
+                                        if(aux.equals("")){
+                                            hay_nota_final = false;
+                                            break;
+                                        }
+                                        nota_final = Double.parseDouble(aux);
+                                        break;
+                                    }catch(NumberFormatException e){
+                                        System.out.println("El valor ingresado no es un número, presiona 'ENTER' para volver a intentar");
+                                        input.nextLine();
+                                        continue;
+                                    }
+                                }
+
                                 try{
-                                    System.out.println("Ingresa el número de créditos de la materia: ");
-                                    aux = input.nextLine().trim();
-                                    creditos = Integer.parseInt(aux);
-                                    //TODO Semestre y opción de ingresar nota final
-                                }catch(NumberFormatException e){
-                                    System.out.println("El valor ingresado no es un número entero, presiona 'ENTER' para volver a intentar");
+                                    if(hay_nota_final){
+                                        nueva = new Materia(nombre, creditos, semestre, nota_final);
+                                    }else{
+                                        nueva = new Materia(nombre, creditos, semestre);
+                                    }
+                                }catch(InputMismatchException e){
+                                    System.out.println(e.getMessage());
                                     input.nextLine();
                                     continue;
-                                }
-                                try{
-
-                                }catch(InputMismatchException e){
-                                    //TODO Crear materia
                                 }
                                 break;
                             }
 
                             if(perfil_principal.add_materia(nueva)){
+                                actualizar_archivo();
                                 break;
                             }else{
-
+                                System.out.println("Ya hay una materia con el mismo nombre registrada, presiona 'ENTER' para volver a intentar");
+                                input.nextLine();
+                                continue;
                             }
                         }
                     }else{

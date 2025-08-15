@@ -1,2 +1,8 @@
-**datos.json
-**.vscode/
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+# Ignore user specific data
+.app/src/main/java/datos.json
